@@ -24,19 +24,21 @@ export const Login= CatchAsync (async(req,res)=>{
 
     const token=generateToken({id: user._id, role: user.role})
     res.status(200).json({
-        status:success,
+        success:true,
+        message:"Logged in successfully..",
         token,
         user:{
             id:user._id,
             name:user.name,
             email:user.email,
-            role:user.role
+            role:user.role,
+            
         }
        
     })
     }catch(error){
         console.error(error)
-        res.status(500).json({message:'server error'})
+        res.status(500).json({success:false,message:'server error'})
     }
 })
 

@@ -5,8 +5,12 @@ import {ToastContainer} from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import App from './App'
 import './index.css'
+import { Provider } from 'react-redux'
+import store from './redux/store/store'
+
 
 createRoot(document.getElementById('root')).render(
+  <Provider store={store}>
   <React.StrictMode>
     <BrowserRouter>   
     <ToastContainer
@@ -16,5 +20,6 @@ createRoot(document.getElementById('root')).render(
     pauseOnHover={false}/>
     <App />
     </BrowserRouter> 
-  </React.StrictMode>,
+  </React.StrictMode>
+  </Provider>
 )
