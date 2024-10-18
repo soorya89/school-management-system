@@ -103,6 +103,11 @@ const StudentModal = ({ isOpen, onClose, onSubmit, mode, student, onUpdateStuden
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (mode === 'view') {
+   
+      onClose();
+      return;
+    }
     if (!validate()) return; 
 
     if (student) {
@@ -126,21 +131,66 @@ const StudentModal = ({ isOpen, onClose, onSubmit, mode, student, onUpdateStuden
             </h4>
           </div>
 
-          {mode !== 'view' ? (
+          {mode === 'view' ? (
+            <div className="grid grid-cols-2 gap-4 mt-4">
+              {/* Display all fields as read-only */}
+              <div>
+                <label htmlFor="inputID" className="block text-gray-700">StudentId</label>
+                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.ID}</p>
+              </div>
+              <div>
+                <label htmlFor="inputName" className="block text-gray-700">Name</label>
+                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.name}</p>
+              </div>
+              {/* Include all other fields in a similar manner */}
+              <div>
+                <label htmlFor="inputDateOfBirth" className="block text-gray-700">Date of Birth</label>
+                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.dateOfBirth}</p>
+              </div>
+              <div>
+                <label htmlFor="inputGender" className="block text-gray-700">Gender</label>
+                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.gender}</p>
+              </div>
+              <div>
+                <label htmlFor="inputContact" className="block text-gray-700">Contact</label>
+                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.contact}</p>
+              </div>
+              <div>
+                <label htmlFor="inputFatherName" className="block text-gray-700">Father's Name</label>
+                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.fatherName}</p>
+              </div>
+              <div>
+                <label htmlFor="inputMotherName" className="block text-gray-700">Mother's Name</label>
+                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.motherName}</p>
+              </div>
+              <div>
+                <label htmlFor="inputGuardianName" className="block text-gray-700">Guardian's Name</label>
+                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.guardian.name}</p>
+              </div>
+              <div>
+                <label htmlFor="inputGuardianRelation" className="block text-gray-700">Relation</label>
+                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.guardian.relation}</p>
+              </div>
+              <div>
+                <label htmlFor="inputGuardianPhone" className="block text-gray-700">Guardian's Phone</label>
+                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.guardian.phone}</p>
+              </div>
+            </div>
+          ) : (
             <form className="grid grid-cols-2 gap-4 mt-4" onSubmit={handleSubmit}>
-                <div>
+              {/* Use input fields for admin and office staff */}
+              <div>
                 <label htmlFor="inputID" className="block text-gray-700">StudentId</label>
                 <input
                   type="text"
                   id="inputID"
                   name="ID"
                   placeholder="Enter studentId"
-                  className={`border rounded-lg p-2 w-full ${errors.studentId? 'border-red-500' : ''}`}
+                  className={`border rounded-lg p-2 w-full ${errors.ID ? 'border-red-500' : ''}`}
                   onChange={handleChange}
                   value={formData.ID}
                   required
                 />
-                
               </div>
               <div>
                 <label htmlFor="inputName" className="block text-gray-700">Name</label>
@@ -156,8 +206,6 @@ const StudentModal = ({ isOpen, onClose, onSubmit, mode, student, onUpdateStuden
                 />
                 {errors.name && <p className="text-red-500">{errors.name}</p>}
               </div>
-
-              {/* Date of Birth */}
               <div>
                 <label htmlFor="inputDateOfBirth" className="block text-gray-700">Date of Birth</label>
                 <input
@@ -359,8 +407,6 @@ const StudentModal = ({ isOpen, onClose, onSubmit, mode, student, onUpdateStuden
                   </div>
                 </div>
               </div>
-
-              {/* Submit Button */}
               <div className="col-span-2 flex justify-end mt-4">
                 <button
                   type="submit"
@@ -370,49 +416,6 @@ const StudentModal = ({ isOpen, onClose, onSubmit, mode, student, onUpdateStuden
                 </button>
               </div>
             </form>
-          ) : (
-            <div className="grid grid-cols-2 gap-4 mt-4">
-              <div>
-                <label htmlFor="inputID" className="block text-gray-700">StudentId</label>
-                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.ID}</p>
-              </div>
-              <div>
-                <label htmlFor="inputName" className="block text-gray-700">Name</label>
-                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.name}</p>
-              </div>
-              <div>
-                <label htmlFor="inputDateOfBirth" className="block text-gray-700">Date of Birth</label>
-                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.dateOfBirth}</p>
-              </div>
-              <div>
-                <label htmlFor="inputGender" className="block text-gray-700">Gender</label>
-                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.gender}</p>
-              </div>
-              <div>
-                <label htmlFor="inputContact" className="block text-gray-700">Contact</label>
-                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.contact}</p>
-              </div>
-              <div>
-                <label htmlFor="inputFatherName" className="block text-gray-700">Father's Name</label>
-                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.fatherName}</p>
-              </div>
-              <div>
-                <label htmlFor="inputMotherName" className="block text-gray-700">Mother's Name</label>
-                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.motherName}</p>
-              </div>
-              <div>
-                <label htmlFor="inputGuardianName" className="block text-gray-700">Guardian's Name</label>
-                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.guardian.name}</p>
-              </div>
-              <div>
-                <label htmlFor="inputGuardianRelation" className="block text-gray-700">Relation</label>
-                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.guardian.relation}</p>
-              </div>
-              <div>
-                <label htmlFor="inputGuardianPhone" className="block text-gray-700">Guardian's Phone</label>
-                <p className="border rounded-lg p-2 w-full bg-gray-100">{formData.guardian.phone}</p>
-              </div>
-            </div>
           )}
         </div>
       </div>

@@ -52,7 +52,7 @@ export const listHistoryAction =()=>async(dispatch,getState)=>{
            },
            withCredentials:true
        }
-   console.log(userInfo)
+   console.log(userInfo,"////")
            const {data} =await axios.get(`${BASE_URL}/library/history`,config)
            console.log(data,"data")
            dispatch({type:LIBRARYHISTORY_LIST_SUCCESS,payload:data.data})
@@ -98,6 +98,7 @@ export const listHistoryAction =()=>async(dispatch,getState)=>{
 }
 
 export const historyDeleteAction=(historyId) =>async(dispatch,getState)=>{
+    console.log(historyId,"id...")
     try{
         dispatch({type:LIBRARYHISTORY_DELETE_REQUEST})
         const{auth : {userInfo}} = getState()
@@ -108,6 +109,7 @@ export const historyDeleteAction=(historyId) =>async(dispatch,getState)=>{
             },
             withCredentials:true
         }
+        console.log(historyId,"id...")
         const {data} =await axios.delete(`${BASE_URL}/library/history/${historyId}`,config)
         
         dispatch({type:LIBRARYHISTORY_DELETE_SUCCESS,payload:data})

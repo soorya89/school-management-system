@@ -1,7 +1,7 @@
 import {toast} from "react-toastify"
 import 'react-toastify/dist/ReactToastify.css'
 import axios from "axios";
-import { USER_LOGIN_FAIL,USER_LOGIN_REQUEST,USER_LOGIN_SUCCESS,USER_LOGOUT } from "../constants/constant"
+import { USER_LOGIN_FAIL,USER_LOGIN_REQUEST,USER_LOGIN_SUCCESS,USER_LOGOUT,STAFF_LOGOUT } from "../constants/constant"
 import { BASE_URL } from "../../../config";
 
 
@@ -56,12 +56,16 @@ export const LOGIN=({credentials,navigate}) => async(dispatch) =>{
 }
 }
 
-export const LOGOUT = (navigate) => async (dispatch) => {
+export const LOGOUT = (navigate,isStaff) => async (dispatch) => {
     sessionStorage.removeItem("userInfo");
 
     toast.warning("Logged out successfully");
   
-    dispatch({ type: USER_LOGOUT });
+    if (isStaff) {
+        dispatch({ type: STAFF_LOGOUT });
+    } else {
+        dispatch({ type: USER_LOGOUT });
+    }
   
     setTimeout(() => {
       navigate("/");  

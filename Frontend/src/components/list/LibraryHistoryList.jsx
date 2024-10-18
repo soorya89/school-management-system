@@ -7,17 +7,15 @@ import { toast } from "react-toastify";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
 const LibraryList = () => {
-  
   const [historyToDelete, setHistoryToDelete] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedHistory, setSelectedHistory] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const dispatch = useDispatch();
   const { loading, error, history = [] } = useSelector((state) => state.historyList);
-  console.log(history,"????????????????")
   const auth = useSelector((state) => state.auth);
   const { userInfo } = auth;
-  
+
   useEffect(() => {
     if (userInfo) {
       dispatch(listHistoryAction());
@@ -32,7 +30,7 @@ const LibraryList = () => {
   };
 
   const handleAddHistory = () => {
-    setSelectedHistory(null); 
+    setSelectedHistory(null);
     setIsModalOpen(true);
   };
 
@@ -56,7 +54,7 @@ const LibraryList = () => {
       await dispatch(historyDeleteAction(historyToDelete));
       handleConfirmationClose();
       setTimeout(() => {
-        dispatch(listHistoryAction()); 
+        dispatch(listHistoryAction());
       }, 1000);
     } catch (error) {
       console.error(error);
@@ -69,18 +67,23 @@ const LibraryList = () => {
       dispatch(listHistoryAction());
     }, 1000);
   };
-console.log(history,"5555555555555")
+
+  const userRole = userInfo?.user?.role
+
   return (
     <>
-      <div className="bg-white shadow-md rounded-lg p-6 m-6">
+       <div className="bg-white shadow-md rounded-lg p-6 m-6">
         <div className="flex justify-between items-center">
           <h2 className="text-2xl font-bold mb-4">Library History</h2>
-          <button
-            onClick={handleAddHistory}
-            className="bg-gray-700 text-white px-4 py-2 rounded-lg"
-          >
-            Add New
-          </button>
+          {/* Show "Add New" button only if the user is an admin */}
+          {userRole === "admin" && (
+            <button
+              onClick={handleAddHistory}
+              className="bg-gray-700 text-white px-4 py-2 rounded-lg"
+            >
+              Add New
+            </button>
+          )}
         </div>
         {loading && <p>Loading...</p>}
 
@@ -92,12 +95,13 @@ console.log(history,"5555555555555")
               <th className="px-4 py-2">Borrowed Date</th>
               <th className="px-4 py-2">Return Date</th>
               <th className="px-4 py-2">Status</th>
-              <th className="px-4 py-2">Actions</th>
+              {/* Show Actions column only if the user is an admin */}
+              {userRole === "admin" && <th className="px-4 py-2">Actions</th>}
             </tr>
           </thead>
           <tbody>
             {history.length > 0 ? (
-              history && history.map((entry) => (
+              history.map((entry) => (
                 <tr key={entry._id}>
                   <td className="px-4 py-2">{entry.studentID}</td>
                   <td className="px-4 py-2">{entry.bookId}</td>
@@ -107,18 +111,24 @@ console.log(history,"5555555555555")
                   </td>
                   <td className="px-4 py-2">{entry.status}</td>
                   <td className="px-4 py-2 flex items-center">
-                  <button
-                  className="text-yellow-500 mr-2 flex items-center"
-                  onClick={() => handleEditHistory(entry)}
-                >
-                  <FaEdit className="mr-1" />
-                </button>
-                <button className="text-red-500 ps-2" 
-                onClick={()=>{setHistoryToDelete(entry._id);
-                               setShowModal(true);}
-                   } >
-                  <FaTrash />
-                </button>
+                    {/* Show Edit button only if the user is an admin */}
+                    {userRole === "admin" && (
+                      <button
+                        className="text-yellow-500 mr-2 flex items-center"
+                        onClick={() => handleEditHistory(entry)}
+                      >
+                        <FaEdit className="mr-1" />
+                      </button>
+                    )}
+                    {/* Show Delete button only if the user is an admin */}
+                    {userRole === "admin" && (
+                      <button
+                        className="text-red-500"
+                        onClick={() => handleDelete(entry._id)}
+                      >
+                        <FaTrash />
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))

@@ -32,9 +32,9 @@ const Login = ()=>{
       const role = userInfo.user?.role || []
       if (role[0] === "admin") {
         navigate("/admin/dashboard");
-      } else if (role[0] === "officeStaff") {
+      } else if (role === "officeStaff") {
         navigate("/staff");
-      } else if (role[0] === "librarian") {
+      } else if (role === "librarian") {
         navigate("/librarian");
       }
     }
@@ -54,8 +54,8 @@ if (loading) {
 }
     return(
         <section className="px-5 py-40 lg:px-0">
-    <div className='w-full max-w-[570px] mx-auto round-lg shadow-md md:p-10'>
-      <h3 className='text-headingColor text-[22px] leading-9 font-bold mb-10'>Hello! <span className='text-[#60a5fa] '>  Welcome</span>  Back🎉</h3>
+    <div className='w-full max-w-[570px] mx-auto round-lg shadow-md md:p-10 '>
+      <h3 className='text-headingColor text-[22px] leading-9 font-bold mb-10'>LOGIN, <span className='text-[#60a5fa] '>  Welcome</span>  Back</h3>
     
 
     <form className='py-4 md:py-0' onSubmit={handleLogin}>
@@ -79,7 +79,7 @@ if (loading) {
       </div>
 
       <div className='mt-7'>
-        <button type='sbmit' className='w-full bg-[#60a5fa] text-white text-[18px] leading-[30px] rounded-lg px-4 py-3'>
+        <button type='sbmit' className='w-full bg-gray-700 text-white text-[18px] leading-[30px] rounded-lg px-4 py-3'>
        Login
           </button>
       </div>

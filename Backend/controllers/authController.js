@@ -5,6 +5,7 @@ import generateToken from '../sevices/generateToken.js'
 
 
 export const Login= CatchAsync (async(req,res)=>{
+    console.log(req.body,"request")
     const {email,password} =req.body
 
     try{
@@ -12,6 +13,7 @@ export const Login= CatchAsync (async(req,res)=>{
             return res.status(400).json({ success: false, message: "Please provide both email and password" });
         }
         const user =await User.findOne({email})
+        console.log(user,"user")
 
         if(!user){
             return res.status(404).json({success:false,message:"user not found"})

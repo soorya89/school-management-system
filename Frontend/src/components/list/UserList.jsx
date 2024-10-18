@@ -7,6 +7,8 @@ import {BASE_URL} from '../../../config'
 import { listUsersAction,userDeleteAction } from "../../redux/actions/userAction";
 import ConfirmationModal from '../../components/Modal/ConfirmationModal'
 import { toast } from "react-toastify";
+import axios from "axios";
+
 
 
 
@@ -19,7 +21,7 @@ const UserList=()=> {
   const dispatch=useDispatch()
   const {users=[],loading,error} =useSelector((state)=>state.userList)
   const auth=useSelector((state)=>state.auth)
-
+  
 
   const {userInfo}=auth
   const userDelete=useSelector((state)=>state.userDelete)
@@ -43,6 +45,11 @@ const UserList=()=> {
 };
   
   const handleAddUser = async (newUser) => {
+
+    if (!newUser.name || !newUser.email || !newUser.role) {
+      toast.error("Please fill in all required fields.");
+      return;
+  }
     try {
         const result = await axios.post(`${BASE_URL}/admin/add-user`, newUser);
         if (result.data.success) { 
@@ -75,82 +82,84 @@ const confirmDelete = async () => {
     console.error(error)
   }
 };
+const isAdmin = userInfo?.user?.role === 'admin';
   return (
     <>
-      <div className="bg-white shadow-md rounded-lg p-6 m-6">
-        <div className="flex justify-between items-center bg-primary text-gray-700 px-4 py-2 rounded-t-lg">
-          <h4 className="text-2xl font-bold">
-            Manage <span className="font-bold">Users</span>
-          </h4>
+    <div className="bg-white shadow-md rounded-lg p-6 m-6">
+      <div className="flex justify-between items-center bg-primary text-gray-700 px-4 py-2 rounded-t-lg">
+        <h4 className="text-2xl font-bold">
+          Manage <span className="font-bold">Users</span>
+        </h4>
+        {/* Show "Add New" button only if the user is an admin */}
+        {isAdmin && (
           <button
             onClick={() => {
               setSelectedUsers(null);
               setIsModalOpen(true);
-              console.log("Add New button clicked")
             }}
             className="bg-gray-700 text-white px-4 py-2 rounded-lg"
           >
             Add New
           </button>
-        </div>
-
-        <table className="table-auto w-full mt-4 text-left text-gray-700">
-          <thead className="bg-gray-200">
-            <tr>
-              <th className="px-4 py-2">Name</th>
-              <th className="px-4 py-2">Email</th>
-              
-              <th className="px-4 py-2">Phone</th>
-              <th className="px-4 py-2">Role</th>
-              <th className="px-4 py-2">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-          {users && users.map((user) => (
-
-           
-              <tr key={user._id}  className="border-b">
-                <td className="px-4 py-2">{user.name}</td>
-                <td className="px-4 py-2">{user.email}</td>
-                
-                <td className="px-4 py-2">
-                {user.phone}
-                </td>
-                <td className="px-4 py-2">
-                {user.role}
-                </td>
-              
-                <td className="px-4 py-2 flex items-center">
-                  <Link to='' className="text-yellow-500 mr-2" onClick={() => handleEditUser(user)}>
-                   <FaEdit  />
-                  </Link>
-                  <button
-                    className="text-red-500 ps-2"
-                   onClick={()=>{setUserToDelete(user);
-                               setShowModal(true);}
-                   }      
-                  >
-                   <FaTrash />
-                  </button>
-                </td>
-              </tr>
-          ))}
-          </tbody>
-        </table>
+        )}
       </div>
-      <UserModal 
-        isOpen={isModalOpen} 
-        onClose={handleModalClose} 
-        onSubmit={handleAddUser}
-        users={selectedUsers}
-        onUpdateUser={handleUpdateUser} 
-      />
-       <ConfirmationModal
-        show={showModal}
-        onHide={() => setShowModal(false)}
-        onConfirm={confirmDelete}
-      /> 
-    </>
+
+      <table className="table-auto w-full mt-4 text-left text-gray-700">
+        <thead className="bg-gray-200">
+          <tr>
+            <th className="px-4 py-2">Name</th>
+            <th className="px-4 py-2">Email</th>
+            <th className="px-4 py-2">Phone</th>
+            <th className="px-4 py-2">Role</th>
+            <th className="px-4 py-2">Action</th>
+          </tr>
+        </thead>
+        <tbody>
+          {users && users.map((user) => (
+            <tr key={user._id} className="border-b">
+              <td className="px-4 py-2">{user.name}</td>
+              <td className="px-4 py-2">{user.email}</td>
+              <td className="px-4 py-2">{user.phone}</td>
+              <td className="px-4 py-2">{user.role}</td>
+              <td className="px-4 py-2 flex items-center">
+                {/* Show Edit and Delete buttons only if the user is an admin */}
+                {isAdmin && (
+                  <>
+                    <Link to="#" className="text-yellow-500 mr-2" onClick={() => handleEditUser(user)}>
+                      <FaEdit />
+                    </Link>
+                    <button
+                      className="text-red-500 ps-2"
+                      onClick={() => {
+                        setUserToDelete(user);
+                        setShowModal(true);
+                      }}
+                    >
+                      <FaTrash />
+                    </button>
+                  </>
+                )}
+               
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+
+    <UserModal
+      isOpen={isModalOpen}
+      onClose={handleModalClose}
+      onSubmit={handleAddUser}
+      users={selectedUsers}
+      onUpdateUser={handleUpdateUser}
+    />
+    <ConfirmationModal
+      show={showModal}
+      onHide={handleConfirmationClose}
+      onConfirm={confirmDelete}
+    />
+  </>
   )
 }
 
